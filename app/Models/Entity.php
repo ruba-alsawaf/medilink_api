@@ -4,11 +4,12 @@ namespace App\Models;
 
 use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
-class Entity extends Model
+class Entity extends Authenticatable
 {
-    use HasFactory, Filterable;
+    use HasApiTokens, HasFactory, Filterable;
 
     protected $fillable = [
         'name',
