@@ -12,4 +12,9 @@ class PartnerService
         return Partner::with('clinics.doctors')
             ->paginate($perPage);
     }
+
+    public function getPartnerWithDetails(int $id)
+    {
+        return Partner::with(['clinics.doctors'])->findOrFail($id);
+    }
 }

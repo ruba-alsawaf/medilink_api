@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GetPartnerRequest;
 use App\Http\Requests\GetPartnersRequest;
 use App\Http\Resources\PartnerResource;
 use App\Services\PartnerService;
@@ -21,5 +22,11 @@ class PartnerController extends Controller
         $partners = $this->service->getPartners($perPage);
 
         return PartnerResource::collection($partners);
+    }
+    public function show(GetPartnerRequest $request, $id)
+    {
+        $partner = $this->service->getPartnerWithDetails($id);
+
+        return new PartnerResource($partner);
     }
 }

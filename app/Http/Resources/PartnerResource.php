@@ -20,6 +20,9 @@ class PartnerResource extends JsonResource
             'contact_email' => $this->contact_email,
             'clinic_count' => $this->clinics()->count(),
             'doctor_count' => $this->clinics()->withCount('doctors')->get()->sum('doctors_count'),
+            'clinics' => $this->whenLoaded('clinics', function () {
+                return ClinicResource::collection($this->clinics);
+            }),
         ];
     }
 }
