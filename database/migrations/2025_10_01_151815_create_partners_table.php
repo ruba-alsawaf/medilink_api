@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('partners', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('contact_email');
+            $table->string('contact_email')->index();
             $table->timestamps();
         });
     }
