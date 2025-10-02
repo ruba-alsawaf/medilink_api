@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\Errors;
 use App\Http\Requests\GetPartnerRequest;
 use App\Http\Requests\GetPartnersRequest;
 use App\Http\Resources\PartnerResource;
@@ -18,15 +19,23 @@ class PartnerController extends Controller
 
     public function index(GetPartnersRequest $request)
     {
-        $perPage = $request->validated()['per_page'] ?? 10;
-        $partners = $this->service->getPartners($perPage);
+        try {
+            $perPage = $request->validated()['per_page'] ?? 10;
+            $partners = $this->service->getPartners($perPage);
 
-        return PartnerResource::collection($partners);
+            return PartnerResource::collection($partners);
+        } catch (\Exception $e) {
+            return Errors::InternalServerError($e->getMessage());
+        }
     }
+
     public function show(GetPartnerRequest $request, $id)
     {
-        $partner = $this->service->getPartnerWithDetails($id);
-
-        return new PartnerResource($partner);
+        try {
+            $partner = $this->service->getPartnerWithDetails($id);
+            return new PartnerResource($partner);
+        } catch (\Exception $e) {
+            return Errors::InternalServerError($e->getMessage());
+        }
     }
 }
