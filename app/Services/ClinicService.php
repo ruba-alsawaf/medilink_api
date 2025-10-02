@@ -6,7 +6,7 @@ use App\Models\Clinic;
 
 class ClinicService
 {
-    public function getClinics(array $filters)
+    public function getAllClinics(array $filters = [])
     {
         $query = Clinic::query();
 
@@ -18,6 +18,6 @@ class ClinicService
             $query->where('partner_id', $filters['partner_id']);
         }
 
-        return $query->paginate(20); 
+        return $query->with('partner')->get();
     }
 }
