@@ -10,16 +10,16 @@ class PartnerService
 {
     public function getPartners(int $perPage = 50): LengthAwarePaginator
     {
-        return Partner::with('clinics.doctors')  
-            ->withCount('clinics')               
+        return Partner::with('clinics.doctors')
+            ->withCount('clinics')
             ->withCount(['clinics as doctors_count' => function ($query) {
                 $query->withCount('doctors');
             }])
             ->paginate($perPage);
     }
 
-    public function getPartnerWithDetails(int $id)
+    public function getPartnerWithDetails(Partner $partner)
     {
-        return Partner::with(['clinics.doctors'])->findOrFail($id);
+        return Partner::with(['clinics.doctors'])->findOrFail($partner->id);
     }
 }

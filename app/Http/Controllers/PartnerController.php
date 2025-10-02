@@ -6,6 +6,7 @@ use App\Exceptions\Errors;
 use App\Http\Requests\GetPartnerRequest;
 use App\Http\Requests\GetPartnersRequest;
 use App\Http\Resources\PartnerResource;
+use App\Models\Partner;
 use App\Services\PartnerService;
 
 class PartnerController extends Controller
@@ -19,6 +20,8 @@ class PartnerController extends Controller
 
     public function index(GetPartnersRequest $request)
     {
+        $this->authorize('viewAny', Partner::class);
+
         try {
             $perPage = $request->validated()['per_page'] ?? 50;
             $partners = $this->service->getPartners($perPage);
@@ -29,10 +32,12 @@ class PartnerController extends Controller
         }
     }
 
-    public function show(GetPartnerRequest $request, $id)
+    public function show(Partner $partner)
     {
+        $this->authorize('view', $partner);
+
         try {
-            $partner = $this->service->getPartnerWithDetails($id);
+            $partner = $this->service->getPartnerWithDetails($partner);
             return new PartnerResource($partner);
         } catch (\Exception $e) {
             return Errors::InternalServerError($e->getMessage());

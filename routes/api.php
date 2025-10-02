@@ -13,7 +13,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/partners', [PartnerController::class, 'index']);
-    Route::get('/partners/{id}', [PartnerController::class, 'show']);
+    Route::get('/partners/{partner}', [PartnerController::class, 'show']);
 
     Route::get('/clinics', [ClinicController::class, 'index']);
 
