@@ -7,35 +7,22 @@ use App\Models\Doctor;
 
 class DoctorService
 {
-    public function getAllDoctors(array $filters = [], array $relations = [], bool $isPaginated = true, int $perPage = 10)
+    public function getAllDoctors(array $filters = [], int $perPage = 50)
     {
-        try {
-            $query = Doctor::filters($filters)->with($relations);
+        $query = Doctor::filters($filters)->with('clinic')->withCount('entities');
 
-            return $isPaginated ? $query->paginate($perPage) : $query->get();
-        } catch (\Throwable $e) {
-            throw Errors::InternalServerError($e->getMessage());
-        }
+        return $query->paginate($perPage);
     }
 
     public function createDoctor(array $data): Doctor
     {
-        try {
-            $doctor = Doctor::create($data);
-            return Doctor::findOrFail($doctor->id)->load('clinic');
-        } catch (\Throwable $e) {
-            throw Errors::InternalServerError($e->getMessage());
-        }
+        return Doctor::create($data);
     }
 
     public function updateDoctorStatus(int $id, string $status): Doctor
     {
-        try {
-            $doctor = Doctor::findOrFail($id);
-            $doctor->update(['status' => $status]);
-            return $doctor->load('clinic');
-        } catch (\Throwable $e) {
-            throw Errors::InternalServerError($e->getMessage());
-        }
+        $doctor = Doctor::findOrFail($id);
+        $doctor->update(['status' => $status]);
+        return $doctor;
     }
 }

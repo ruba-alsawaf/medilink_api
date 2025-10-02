@@ -20,7 +20,7 @@ class PartnerController extends Controller
     public function index(GetPartnersRequest $request)
     {
         try {
-            $perPage = $request->validated()['per_page'] ?? 10;
+            $perPage = $request->validated()['per_page'] ?? 50;
             $partners = $this->service->getPartners($perPage);
 
             return PartnerResource::collection($partners);

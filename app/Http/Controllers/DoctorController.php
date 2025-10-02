@@ -21,7 +21,9 @@ class DoctorController extends Controller
 
     public function index(GetDoctorsRequest $request)
     {
-        $doctors = $this->doctorService->getAllDoctors($request->validated());
+        $perPage = $request->validated()['per_page'] ?? 50;
+        $doctors = $this->doctorService->getAllDoctors($request->validated(), $perPage);
+
         return DoctorResource::collection($doctors);
     }
 

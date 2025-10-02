@@ -8,21 +8,18 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class PartnerService
 {
-    public function getPartners(int $perPage = 10): LengthAwarePaginator
+    public function getPartners(int $perPage = 50): LengthAwarePaginator
     {
-        try {
-            return Partner::with('clinics.doctors')->paginate($perPage);
-        } catch (\Throwable $e) {
-            throw Errors::InternalServerError($e->getMessage());
-        }
+        return Partner::with('clinics.doctors')  
+            ->withCount('clinics')               
+            ->withCount(['clinics as doctors_count' => function ($query) {
+                $query->withCount('doctors');
+            }])
+            ->paginate($perPage);
     }
 
     public function getPartnerWithDetails(int $id)
     {
-        try {
-            return Partner::with('clinics.doctors')->findOrFail($id);
-        } catch (\Throwable $e) {
-            throw Errors::InternalServerError($e->getMessage());
-        }
+        return Partner::with(['clinics.doctors'])->findOrFail($id);
     }
 }

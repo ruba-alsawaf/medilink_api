@@ -19,7 +19,9 @@ class ClinicController extends Controller
     public function index(GetClinicsRequest $request)
     {
         try {
-            $clinics = $this->clinicService->getAllClinics($request->validated());
+            $perPage = $request->get('per_page', 50);
+            $clinics = $this->clinicService->getAllClinics($request->only(['city', 'partner_id']), $perPage);
+
             return ClinicResource::collection($clinics);
         } catch (\Exception $e) {
             return Errors::InternalServerError($e->getMessage());
