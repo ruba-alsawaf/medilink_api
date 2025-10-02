@@ -19,6 +19,7 @@ class ClinicResource extends JsonResource
             'name' => $this->name,
             'city' => $this->city,
             'type' => $this->type,
+            'partner_id' => $this->partner_id,
             'doctor_count' => $this->doctors()->count(),
             'doctors' => DoctorResource::collection($this->whenLoaded('doctors')),
 
