@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\Errors;
+use App\Http\Requests\CreateDoctorRequest;
 use App\Http\Requests\GetDoctorsRequest;
+use App\Http\Requests\UpdateDoctorRequest;
 use App\Http\Resources\DoctorResource;
 use App\Services\DoctorService;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class DoctorController extends Controller
 {
@@ -19,24 +21,25 @@ class DoctorController extends Controller
 
     public function index(GetDoctorsRequest $request)
     {
-        try {
-            $validated = $request->validated();
+        $doctors = $this->doctorService->getAllDoctors($request->validated());
+        return DoctorResource::collection($doctors);
+    }
 
-            $filters     = collect($validated)->except(['relations', 'paginated', 'per_page'])->toArray();
-            $relations   = $validated['relations'] ?? [];
-            $isPaginated = $validated['paginated'] ?? true;
-            $perPage     = $validated['per_page'] ?? 10;
+    public function store(CreateDoctorRequest $request): JsonResponse
+    {
+        $doctor = $this->doctorService->createDoctor($request->validated());
+        return response()->json([
+            'status' => 'success',
+            'data' => new DoctorResource($doctor),
+        ], 201);
+    }
 
-            $doctors = $this->doctorService->getAllDoctors(
-                $filters,
-                $relations,
-                $isPaginated,
-                $perPage
-            );
-
-            return DoctorResource::collection($doctors);
-        } catch (\Exception $e) {
-            return Errors::InternalServerError($e->getMessage());
-        }
+    public function update(UpdateDoctorRequest $request, int $id): JsonResponse
+    {
+        $doctor = $this->doctorService->updateDoctorStatus($id, $request->status);
+        return response()->json([
+            'status' => 'success',
+            'data' => new DoctorResource($doctor),
+        ], 200);
     }
 }
