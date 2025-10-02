@@ -24,6 +24,7 @@ class GetClinicsRequest extends FormRequest
         return [
             'city' => 'nullable', 'string', 'max:255',
             'partner_id' => 'nullable', 'integer', 'exists:partners,id',
+            'per_page' => 'nullable|integer|min:1|max:100',
         ];
     }
 }

@@ -20,9 +20,11 @@ class ClinicResource extends JsonResource
             'city' => $this->city,
             'type' => $this->type,
             'partner_id' => $this->partner_id,
-            'partner'    => new PartnerResource($this->whenLoaded('partner')),
-            'doctor_count' => $this->doctors()->count(),
+            'partner' => new PartnerResource($this->whenLoaded('partner')),
+            'doctor_count' => $this->whenNotNull($this->doctors_count),
             'doctors' => DoctorResource::collection($this->whenLoaded('doctors')),
+            'created_at' => $this->created_at->toDateTimeString(),
+            'updated_at' => $this->updated_at->toDateTimeString(),
 
         ];
     }

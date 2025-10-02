@@ -6,6 +6,7 @@ use App\Exceptions\Errors;
 use App\Http\Requests\GetClinicsRequest;
 use App\Http\Resources\ClinicResource;
 use App\Services\ClinicService;
+use Illuminate\Support\Facades\Auth;
 
 class ClinicController extends Controller
 {
@@ -20,7 +21,13 @@ class ClinicController extends Controller
     {
         try {
             $perPage = $request->get('per_page', 50);
-            $clinics = $this->clinicService->getAllClinics($request->only(['city', 'partner_id']), $perPage);
+            $entity = Auth::user();
+
+            $clinics = $this->clinicService->getAllClinics(
+                $request->only(['city', 'partner_id']),
+                $perPage,
+                $entity
+            );
 
             return ClinicResource::collection($clinics);
         } catch (\Exception $e) {

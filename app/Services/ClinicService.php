@@ -4,12 +4,27 @@ namespace App\Services;
 
 use App\Exceptions\Errors;
 use App\Models\Clinic;
+use App\Models\Entity;
+use App\Policies\ClinicPolicy;
 
 class ClinicService
 {
-    public function getAllClinics(array $filters = [], int $perPage = 50)
+    protected ClinicPolicy $clinicPolicy;
+
+    public function __construct(ClinicPolicy $clinicPolicy)
     {
-        $query = Clinic::query()->with('partner')->withCount('doctors');
+        $this->clinicPolicy = $clinicPolicy;
+    }
+
+    public function getAllClinics(array $filters = [], int $perPage = 50, Entity $entity)
+    {
+        if ($entity) {
+            $query = $this->clinicPolicy->getAccessibleClinicsQuery($entity);
+        } else {
+            $query = Clinic::query();
+        }
+
+        $query->with('partner')->withCount('doctors');
 
         if (!empty($filters['city'])) {
             $query->where('city', $filters['city']);
