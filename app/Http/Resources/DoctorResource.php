@@ -15,17 +15,15 @@ class DoctorResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'        => $this->id,
-            'name'      => $this->name,
-            'email'     => $this->email,
-            'phone'     => $this->phone,
+            'id' => $this->id,
+            'name' => $this->name,
             'specialty' => $this->specialty,
-            'status'    => $this->status,
-            'clinic'    => [
-                'id'   => $this->clinic?->id,
-                'name' => $this->clinic?->name,
-            ],
+            'status' => $this->status,
+            'clinic_id' => $this->clinic_id,
+            'clinic' => new ClinicResource($this->whenLoaded('clinic')),
+            'entity_count' => $this->whenNotNull($this->entities_count),
             'created_at' => $this->created_at?->toDateTimeString(),
+            'updated_at' => $this->updated_at?->toDateTimeString(),
         ];
     }
 }

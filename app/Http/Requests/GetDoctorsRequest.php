@@ -22,11 +22,9 @@ class GetDoctorsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => 'nullable',
-            'in:active,inactive',
-            'specialty' => 'nullable',
-            'string',
-            'max:255',
+            'status' => 'nullable|in:active,inactive',
+            'specialty' => 'nullable|string|max:255',
+            'per_page' => 'nullable|integer|min:1|max:100',
         ];
     }
 }

@@ -3,37 +3,74 @@
 namespace App\Services;
 
 use App\Exceptions\Errors;
-use App\Models\Clinic;
+use App\Models\Doctor;
 use App\Models\Entity;
-use App\Policies\ClinicPolicy;
+use App\Policies\DoctorPolicy;
+use Illuminate\Pagination\LengthAwarePaginator;
 
-class ClinicService
+class DoctorService
 {
-    protected ClinicPolicy $clinicPolicy;
+    protected DoctorPolicy $doctorPolicy;
 
-    public function __construct(ClinicPolicy $clinicPolicy)
+    public function __construct(DoctorPolicy $doctorPolicy)
     {
-        $this->clinicPolicy = $clinicPolicy;
+        $this->doctorPolicy = $doctorPolicy;
     }
 
-    public function getAllClinics(array $filters = [], int $perPage = 50, Entity $entity)
+    public function getAllDoctors(array $filters = [], int $perPage = 50, Entity $entity = null): LengthAwarePaginator
     {
         if ($entity) {
-            $query = $this->clinicPolicy->getAccessibleClinicsQuery($entity);
+            $query = $this->doctorPolicy->getAccessibleDoctorsQuery($entity);
         } else {
-            $query = Clinic::query();
+            $query = Doctor::query();
         }
 
-        $query->with('partner')->withCount('doctors');
+        $query->with('clinic')->withCount('entities');
 
-        if (!empty($filters['city'])) {
-            $query->where('city', $filters['city']);
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
         }
 
-        if (!empty($filters['partner_id'])) {
-            $query->where('partner_id', $filters['partner_id']);
+        if (!empty($filters['specialty'])) {
+            $query->where('specialty', 'like', '%' . $filters['specialty'] . '%');
         }
 
         return $query->paginate($perPage);
+    }
+
+    public function createDoctor(array $data, Entity $entity): Doctor
+    {
+        if ($entity && !$this->doctorPolicy->canCreateInClinic($entity, $data['clinic_id'])) {
+            throw new \Exception('You are not authorized to create doctors in this clinic');
+        }
+
+        return Doctor::create($data);
+    }
+
+    public function updateDoctorStatus(int $id, string $status, Entity $entity): Doctor
+    {
+        $doctor = Doctor::findOrFail($id);
+
+        if ($entity && !$this->doctorPolicy->update($entity, $doctor)) {
+            throw new \Exception('You are not authorized to update this doctor');
+        }
+
+        $doctor->update(['status' => $status]);
+        return $doctor;
+    }
+
+    public function getDoctorById(int $id, Entity $entity = null): ?Doctor
+    {
+        $doctor = Doctor::with('clinic')->find($id);
+
+        if (!$doctor) {
+            return null;
+        }
+
+        if ($entity && !$this->doctorPolicy->view($entity, $doctor)) {
+            return null;
+        }
+
+        return $doctor;
     }
 }
