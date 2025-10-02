@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\Errors;
 use App\Http\Requests\GetClinicsRequest;
-use Illuminate\Http\Request;
-use App\Services\ClinicService;
 use App\Http\Resources\ClinicResource;
+use App\Services\ClinicService;
 
 class ClinicController extends Controller
 {
@@ -17,13 +16,13 @@ class ClinicController extends Controller
         $this->clinicService = $clinicService;
     }
 
-    public function index(Request $request)
+    public function index(GetClinicsRequest $request)
     {
         try {
-            $clinics = $this->clinicService->getAllClinics($request->only(['city', 'partner_id']));
+            $clinics = $this->clinicService->getAllClinics($request->validated());
             return ClinicResource::collection($clinics);
         } catch (\Exception $e) {
-            Errors::InternalServerError($e->getMessage());
+            return Errors::InternalServerError($e->getMessage());
         }
     }
 }
