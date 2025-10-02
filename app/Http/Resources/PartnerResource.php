@@ -18,11 +18,11 @@ class PartnerResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'contact_email' => $this->contact_email,
-            'clinic_count' => $this->clinics()->count(),
-            'doctor_count' => $this->clinics()->withCount('doctors')->get()->sum('doctors_count'),
-            'clinics' => $this->whenLoaded('clinics', function () {
-                return ClinicResource::collection($this->clinics);
-            }),
+            'clinic_count' => $this->whenNotNull($this->clinics_count),
+            'doctor_count' => $this->whenNotNull($this->doctors_count),
+            'clinics' => ClinicResource::collection($this->whenLoaded('clinics')),
+            'created_at' => $this->created_at?->toDateTimeString(),
+            'updated_at' => $this->updated_at?->toDateTimeString(),
         ];
     }
 }
