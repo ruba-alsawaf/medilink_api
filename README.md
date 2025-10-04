@@ -117,8 +117,3 @@ php artisan serve
 
 > Note: Seeders and Factories are prepared to generate large test data for testing the APIs directly.
 
----
-
-If you want, I can also add a **section with example GET/POST requests and JSON responses** so anyone can test the API immediately without guessing parameters.
-
-Do you want me to do that?
