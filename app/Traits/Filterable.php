@@ -4,7 +4,9 @@ namespace App\Traits;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-
+/**
+ * @property-read array $filtersArray
+ */
 trait Filterable
 {
     public function scopeFilters(Builder $query, array $data): Builder
