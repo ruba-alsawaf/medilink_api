@@ -7,13 +7,6 @@ use App\Policies\PartnerPolicy;
 
 class PartnerService
 {
-    protected PartnerPolicy $partnerPolicy;
-
-    public function __construct(PartnerPolicy $partnerPolicy)
-    {
-        $this->partnerPolicy = $partnerPolicy;
-    }
-
     public function getPartners(int $perPage)
     {
         return Partner::withCount('clinics')->withCount(['clinics as doctors_count' => function ($query) {
