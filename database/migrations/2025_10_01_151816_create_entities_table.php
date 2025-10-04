@@ -17,8 +17,7 @@ return new class extends Migration {
             $table->string('email')->unique()->index();
             $table->string('password');
             $table->enum('role', Constant::ENTITY_ROLES)->index();
-            $table->enum('model_type', Constant::MODEL_TYPES)->index();
-            $table->unsignedBigInteger('model_id')->index();
+            $table->nullableMorphs('model');
             $table->timestamps();
         });
     }

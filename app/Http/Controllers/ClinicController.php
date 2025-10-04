@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\Errors;
+use App\Exceptions\ApiException;
 use App\Http\Requests\GetClinicsRequest;
 use App\Http\Resources\ClinicResource;
 use App\Services\ClinicService;
-use Illuminate\Support\Facades\Auth;
 
 class ClinicController extends Controller
 {
@@ -19,19 +18,14 @@ class ClinicController extends Controller
 
     public function index(GetClinicsRequest $request)
     {
+
         try {
-            $perPage = $request->get('per_page', 50);
-            $entity = Auth::user();
-
-            $clinics = $this->clinicService->getAllClinics(
-                $request->only(['city', 'partner_id']),
-                $perPage,
-                $entity
-            );
-
-            return ClinicResource::collection($clinics);
-        } catch (\Exception $e) {
-            return Errors::InternalServerError($e->getMessage());
+            $filters = $request->all();
+            $data = $this->clinicService
+                ->getAllClinics($filters);
+            return $this->success($data, 'data', 200);
+        } catch (ApiException $e) {
+            throw $e;
         }
     }
 }

@@ -2,13 +2,8 @@
 
 namespace App\Services;
 
-use App\Exceptions\Errors;
 use App\Models\Partner;
-use App\Models\Entity;
 use App\Policies\PartnerPolicy;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\log;
 
 class PartnerService
 {
@@ -19,21 +14,15 @@ class PartnerService
         $this->partnerPolicy = $partnerPolicy;
     }
 
-    public function getPartners(int $perPage = 50, Entity $entity = null): LengthAwarePaginator
+    public function getPartners(int $perPage)
     {
-        return Partner::withCount('clinics')
-            ->with(['clinics' => function ($query) {
-                $query->withCount('doctors');
-            }])
-            ->paginate($perPage);
+        return Partner::withCount('clinics')->withCount(['clinics as doctors_count' => function ($query) {
+            $query->join('doctors', 'clinics.id', '=', 'doctors.clinic_id');
+        }])->paginate($perPage);
     }
 
-    public function getPartnerWithDetails(Partner $partner, Entity $entity = null)
+    public function getPartnerWithDetails(Partner $partner)
     {
-        if ($entity && !$this->partnerPolicy->view($entity, $partner)) {
-            return null;
-        }
-
         return $partner->load(['clinics' => function ($query) {
             $query->with('doctors')->withCount('doctors');
         }]);

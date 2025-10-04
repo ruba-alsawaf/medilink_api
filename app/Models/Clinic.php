@@ -21,7 +21,7 @@ class Clinic extends Model
 
     protected static $filtersArray = [
         'name' => 'like',
-        'city' => 'equal',
+        'city' => 'like',
         'type' => 'equal',
         'partner_id' => 'equal',
         'created_at' => 'date',
