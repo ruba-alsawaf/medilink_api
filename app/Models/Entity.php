@@ -43,33 +43,4 @@ class Entity extends Authenticatable
         return $this->morphTo();
     }
 
-    public function isPartnerAdmin(): bool
-    {
-        return $this->role === 'partner_admin';
-    }
-
-    public function isClinicAdmin(): bool
-    {
-        return $this->role === 'clinic_admin';
-    }
-
-    public function isDoctor(): bool
-    {
-        return $this->role === 'doctor';
-    }
-
-    public function scopeAdmins($query)
-    {
-        return $query->whereIn('role', ['partner_admin', 'clinic_admin']);
-    }
-
-    public function scopeDoctors($query)
-    {
-        return $query->where('role', 'doctor');
-    }
-
-    public function scopeModelType($query, $type)
-    {
-        return $query->where('model_type', $type);
-    }
 }

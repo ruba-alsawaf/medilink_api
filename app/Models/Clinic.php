@@ -42,11 +42,4 @@ class Clinic extends Model
         return $this->morphMany(Entity::class, 'model');
     }
 
-    public function scopeCities($query, $cities)
-    {
-        if (is_array($cities)) {
-            return $query->whereIn('city', $cities);
-        }
-        return $query;
-    }
 }

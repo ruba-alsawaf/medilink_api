@@ -29,8 +29,4 @@ class Partner extends Model
         return $this->morphMany(Entity::class, 'model');
     }
 
-    public function scopeClinicsCount($query, $value)
-    {
-        return $query->withCount('clinics')->having('clinics_count', '>=', $value);
-    }
 }

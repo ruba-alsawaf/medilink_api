@@ -36,8 +36,4 @@ class Doctor extends Model
         return $this->morphMany(Entity::class, 'model');
     }
 
-    public function scopeActive($query)
-    {
-        return $query->where('status', 'active');
-    }
 }
