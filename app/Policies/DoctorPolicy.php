@@ -22,12 +22,7 @@ class DoctorPolicy
      */
     public function view(Entity $entity, Doctor $doctor): bool
     {
-        return match ($entity->role) {
-            'partner_admin' => $doctor->clinic->partner_id === $entity->model_id,
-            'clinic_admin'  => $doctor->clinic_id === $entity->model_id,
-            'doctor'        => $doctor->id === $entity->model_id,
-            default         => false,
-        };
+        return false;
     }
 
     /**
@@ -44,19 +39,6 @@ class DoctorPolicy
     public function update(Entity $entity, Doctor $doctor): bool
     {
         return $entity->role === 'clinic_admin' && $doctor->clinic_id === $entity->model_id;
-    }
-
-    /**
-     * Get doctors that the user can access
-     */
-    public function getAccessibleDoctorsQuery(Entity $entity)
-    {
-        return match ($entity->role) {
-            'partner_admin' => Doctor::whereHas('clinic', fn($q) => $q->where('partner_id', $entity->model_id)),
-            'clinic_admin'  => Doctor::where('clinic_id', $entity->model_id),
-            'doctor'        => Doctor::where('id', $entity->model_id),
-            default         => Doctor::where('id', 0),
-        };
     }
 
     /**

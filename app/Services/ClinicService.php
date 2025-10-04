@@ -17,10 +17,6 @@ class ClinicService
 
     public function getAllClinics(array $filters = [])
     {
-        try {
-            return Clinic::filters($filters)->with('partner')->withCount('doctors')->get();
-        } catch (\Throwable $e) {
-            throw $e;
-        }
+        return Clinic::filters($filters)->with('partner')->withCount('doctors')->get();
     }
 }
