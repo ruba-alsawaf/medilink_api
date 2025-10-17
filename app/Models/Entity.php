@@ -6,10 +6,11 @@ use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 
 class Entity extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Filterable;
+    use HasApiTokens, HasFactory, Filterable,Notifiable;
 
     protected $fillable = [
         'name',

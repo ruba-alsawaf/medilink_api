@@ -13,12 +13,12 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         
-        $partners = Partner::factory()->count(5000)->create();
-        $clinics = Clinic::factory()->count(15000)
+        $partners = Partner::factory()->count(50)->create();
+        $clinics = Clinic::factory()->count(150)
             ->sequence(fn($sequence) => ['partner_id' => $partners->random()->id])
             ->create();
 
-        Doctor::factory()->count(30000)
+        Doctor::factory()->count(300)
             ->sequence(fn($sequence) => ['clinic_id' => $clinics->random()->id])
             ->create();
 
